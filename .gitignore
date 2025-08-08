@@ -1,1 +1,8 @@
 node_modules
+.env
+
+
+# git commit -m "first commit"
+# git branch -M main
+# git remote add origin https://github.com/Ferdous725890/Tour-Management-.git
+# git push -u origin main

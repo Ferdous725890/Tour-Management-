@@ -1,0 +1,7 @@
+
+
+Dependencies ---->>>
+ npm i express mongoose zod jsonwebtoken cors dotenv
+
+Dev_Dependencies 
+ npm i @types/express @types/cors @types/dotenv @types/json
