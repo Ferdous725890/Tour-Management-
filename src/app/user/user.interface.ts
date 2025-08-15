@@ -7,7 +7,7 @@ export enum Role {
 }
 
 export interface IAuthProvider {
-  provider: string; // google, credential
+  provider: "Google" | "Credentials"; // google, credential
   providerId: string;
 }
 
@@ -16,6 +16,7 @@ export enum IsActive {
   INACTIVE = "INACTIVE",
   BLOCKED = "BLOCKED",
 }
+
 
 export interface IUser {
   name: string;
