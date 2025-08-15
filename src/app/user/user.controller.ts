@@ -7,6 +7,9 @@ import { UserServices } from "./user.service";
 import { catchAsync } from "../utils/catchAsync";
 import { success } from "zod";
 import { sendResponse } from "../utils/send.response";
+import { verifyToken } from "../utils/jwt";
+import { envVars } from "../config/env";
+import { JwtPayload } from "jsonwebtoken";
 // import AppError from "../errorHelper/appError";
 // const CreatedUser = async (req: Request, res: Response, next: NextFunction) => {
 //   try {
@@ -50,6 +53,7 @@ import { sendResponse } from "../utils/send.response";
 // -------..........
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 const CreatedUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const user = await UserServices.CreateUser(req.body);
@@ -57,6 +61,25 @@ const CreatedUser = catchAsync(
     //send status
     res.status(httpStatus.CREATED).json({
       message: "User Created SuccessFully",
+      user,
+    });
+  }
+);
+
+export const updateUser = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userid = req.params.id;
+    const token = req.headers.authorization;
+    const verifiedToken = verifyToken(
+      token as string,
+      envVars.JWT_ACCESS_SECRET
+    ) as JwtPayload;
+    const payload = req.body
+    const user = await UserServices.updateUser(userid,payload, verifiedToken );
+
+    //send status
+    res.status(httpStatus.CREATED).json({
+      message: "User Updated SuccessFully",
       user,
     });
   }
@@ -70,12 +93,11 @@ const getAllUser = async (req: Request, res: Response, next: NextFunction) => {
   //   data: users,
   // });
   sendResponse(res, {
-    success : true,
+    success: true,
     statusCode: httpStatus.OK,
     message: "User user Retrived Successfully ",
-    data : result.data,
-    meta: result.meta
-
+    data: result.data,
+    meta: result.meta,
   });
 };
 
@@ -93,6 +115,7 @@ const getAllUser = async (req: Request, res: Response, next: NextFunction) => {
 export const userController = {
   CreatedUser,
   getAllUser,
+  updateUser
 };
 
 // Function => res - res function
