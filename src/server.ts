@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import app from "./app";
 import { Server } from "http";
 import { envVars } from "./app/config/env";
+import { seedSuperAdmin } from "./app/utils/seedSuperAdmint";
 let server: Server;
 const startServer = async () => {
   try {
@@ -16,8 +17,10 @@ const startServer = async () => {
   }
 };
 
-startServer();
-
+(async () => {
+  await startServer();
+  await seedSuperAdmin();
+})();
 process.on("unhandledRejection", (err) => {
   console.log("Unhandle Rejection Detected ... Server Shutting Down", err);
   if (server) {
@@ -31,21 +34,19 @@ process.on("unhandledRejection", (err) => {
 
 process.on("uncaughtException", (err) => {
   console.log("Uncaught Exception Detected ... Server Shuting Down", err);
-  if(server){
-    server.close(() =>{
-      process.exit(1)
-    })
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
   }
 });
 
-
-
 process.on("SIGTERM", () => {
-  console.log("SIGTERM Detected ... Server Shuting Down", );
-  if(server){
-    server.close(() =>{
-      process.exit(1)
-    })
+  console.log("SIGTERM Detected ... Server Shuting Down");
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
   }
 });
 
@@ -54,8 +55,6 @@ process.on("SIGTERM", () => {
 
 //-------------------- Uncaught Rejection Error
 // throw new Error("I Forgot to Handle This Local Error")
-
-
 
 /**
  * unhandel rejection error
