@@ -1,6 +1,4 @@
 import { Response } from "express";
-import { StatusCodes } from "http-status-codes";
-import { success } from "zod";
 
 interface TMata {
   total: number;
