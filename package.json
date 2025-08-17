@@ -15,6 +15,7 @@
   "devDependencies": {
     "@eslint/js": "^9.32.0",
     "@types/bcryptjs": "^2.4.6",
+    "@types/http-status-codes": "^1.2.0",
     "@types/jsonwebtoken": "^9.0.10",
     "eslint": "^9.32.0",
     "ts-node-dev": "^2.0.0",

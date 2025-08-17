@@ -70,12 +70,17 @@ export const updateUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const userid = req.params.id;
     const token = req.headers.authorization;
-    const verifiedToken = verifyToken(
+    const verifiedTokens = verifyToken(
       token as string,
       envVars.JWT_ACCESS_SECRET
     ) as JwtPayload;
-    const payload = req.body
-    const user = await UserServices.updateUser(userid,payload, verifiedToken );
+
+
+    const verifiedToken = req.user;
+
+
+    const payload = req.body;
+    const user = await UserServices.updateUser(userid, payload, verifiedToken);
 
     //send status
     res.status(httpStatus.CREATED).json({
@@ -115,7 +120,7 @@ const getAllUser = async (req: Request, res: Response, next: NextFunction) => {
 export const userController = {
   CreatedUser,
   getAllUser,
-  updateUser
+  updateUser,
 };
 
 // Function => res - res function
