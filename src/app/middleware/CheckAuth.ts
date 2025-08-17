@@ -5,31 +5,27 @@ import { verifyToken } from "../utils/jwt";
 import { envVars } from "../config/env";
 import { Role } from "../user/user.interface";
 
-
 export const authCheck =
-  (...authRoles : string[]) => async (req: Request, res: Response, next: NextFunction) => {
+  (...authRoles: string[]) =>
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const accessToken = req.headers.authorization;
 
       if (!accessToken) {
         throw new AppError(403, "Token Not Resived");
       }
+      const veryfiedToken = verifyToken(
+        accessToken,
+        envVars.JWT_ACCESS_SECRET
+      ) as JwtPayload;
 
-      // const veryfiedToken = jwt.verify(accessToken, "secret")
-      const veryfiedToken = verifyToken(accessToken, envVars.JWT_ACCESS_SECRET)  as JwtPayload
-
-      // if(!veryfiedToken){
-      //   throw new AppError(403, "You Are Not Authorize")
-      // }
-
-      if 
+      if (
         // ((veryfiedToken as JwtPayload).role !== Role.ADMIN) |
-        ((!authRoles.includes(veryfiedToken.role)) | Role.SUPPER_ADMIN
+        !authRoles.includes(veryfiedToken.role) | Role.SUPPER_ADMIN
       ) {
         throw new AppError(403, "You Are Not Parmited View This Route");
       }
-
-      console.log(veryfiedToken);
+      req.user = verifyToken;
       next();
     } catch (error) {
       next(error);
