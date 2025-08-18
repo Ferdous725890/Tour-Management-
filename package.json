@@ -15,6 +15,7 @@
   "devDependencies": {
     "@eslint/js": "^9.32.0",
     "@types/bcryptjs": "^2.4.6",
+    "@types/cookie-parser": "^1.4.9",
     "@types/http-status-codes": "^1.2.0",
     "@types/jsonwebtoken": "^9.0.10",
     "eslint": "^9.32.0",
@@ -28,6 +29,7 @@
     "@types/express": "^5.0.3",
     "bcryptjs": "^3.0.2",
     "bricks.js": "^1.8.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",

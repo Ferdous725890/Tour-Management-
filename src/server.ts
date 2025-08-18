@@ -21,6 +21,8 @@ const startServer = async () => {
   await startServer();
   await seedSuperAdmin();
 })();
+
+
 process.on("unhandledRejection", (err) => {
   console.log("Unhandle Rejection Detected ... Server Shutting Down", err);
   if (server) {

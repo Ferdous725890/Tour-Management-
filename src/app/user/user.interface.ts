@@ -35,8 +35,3 @@ export interface IUser {
   guides: Types.ObjectId[];
 }
 
-// note
-/**
- * email and password
- * google authentication
- */
