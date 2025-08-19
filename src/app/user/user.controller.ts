@@ -5,40 +5,10 @@ import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import { UserServices } from "./user.service";
 import { catchAsync } from "../utils/catchAsync";
-import { success } from "zod";
 import { sendResponse } from "../utils/send.response";
 import { verifyToken } from "../utils/jwt";
 import { envVars } from "../config/env";
 import { JwtPayload } from "jsonwebtoken";
-// import AppError from "../errorHelper/appError";
-// const CreatedUser = async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     //recived paramitar
-//     // const { name, email } = req.body;
-//     // // created user
-//     // const user = await User.create({
-//     //   name,
-//     //   email,
-//     // });
-//     // throw new AppError(httpStatus.BAD_REQUEST, "Fack Error")
-
-//     const user = await UserServices.CreateUser(req.body);
-
-//     //send status
-//     res.status(httpStatus.CREATED).json({
-//       message: "User Created SuccessFully",
-//       user,
-//     });
-//   } catch (err: any) {
-//     next(err);
-//     // res.status(httpStatus.BAD_REQUEST).json({
-//     //   message: `Something Went Wrong! ${err.message} from user controlar`,
-//     //   err
-//     // });
-//   }
-// };
-
-//------------------GET ---ALL---- USERS
 
 // const createdUserFunction = async(req : Request, res : Response) => {
 //    const user = await UserServices.CreateUser(req.body);
@@ -57,7 +27,6 @@ import { JwtPayload } from "jsonwebtoken";
 const CreatedUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const user = await UserServices.CreateUser(req.body);
-
     //send status
     res.status(httpStatus.CREATED).json({
       message: "User Created SuccessFully",
@@ -75,9 +44,7 @@ export const updateUser = catchAsync(
       envVars.JWT_ACCESS_SECRET
     ) as JwtPayload;
 
-
-    const verifiedToken = req.user;
-
+    const verifiedToken = req.user as JwtPayload;
 
     const payload = req.body;
     const user = await UserServices.updateUser(userid, payload, verifiedToken);
@@ -107,21 +74,8 @@ const getAllUser = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-// const getAllUser = async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     const users = await UserServices.getAllUser();
-
-//     return users;
-//   } catch (err: any) {
-//     console.log(err);
-//     next(err);
-//   }
-// };
 export const userController = {
   CreatedUser,
   getAllUser,
   updateUser,
 };
-
-// Function => res - res function
-// Function => try-catch catch => req - res Function

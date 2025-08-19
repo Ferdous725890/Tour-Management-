@@ -1,12 +1,11 @@
 import AppError from "../errorHelper/appError";
-import { IAuthProvider, IsActive, IUser, Role } from "./user.interface";
+import { IAuthProvider, IUser, Role } from "./user.interface";
 import { User } from "./user.model";
 import httpStatus from "http-status-codes";
 import bcryptjs from "bcryptjs";
 
 import { envVars } from "../config/env";
 import { JwtPayload } from "jsonwebtoken";
-
 
 const CreateUser = async (payload: Partial<IUser>) => {
   const { password, email, ...rest } = payload;
@@ -39,21 +38,11 @@ const updateUser = async (
   payload: Partial<IUser>,
   decodedToken: JwtPayload
 ) => {
+  const ifUserExist = await User.findById(userid);
 
-const ifUserExist = await User.findById(userid)
-// const ifUserExist = await User.findById(userid);
-
-
-if (!ifUserExist){
-throw new AppError(httpStatus.NOT_FOUND,"Your Not Found")
-}
-
-
-// if(ifUserExist.isDeleted || ifUserExist.isActive ===IsActive.BLOCKED){
-// throw new AppError(httpStatus.FORBIDDEN,"This User Can Not Updated")
-
-// }
-
+  if (!ifUserExist) {
+    throw new AppError(httpStatus.NOT_FOUND, "Your Not Found");
+  }
 
   if (payload.role) {
     if (decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE) {
@@ -82,7 +71,7 @@ throw new AppError(httpStatus.NOT_FOUND,"Your Not Found")
       new: true,
       runValidators: true,
     });
-    
+
     return newUpdateUser;
   }
 
