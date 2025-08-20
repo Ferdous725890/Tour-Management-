@@ -1,15 +1,19 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import AppError from "../../errorHelper/appError";
 import { IsActive, IUser } from "../../user/user.interface";
 import { User } from "../../user/user.model";
-import httpStatus from "http-status-codes";
+import httpStatus, { ACCEPTED } from "http-status-codes";
 import bcryptjs from "bcryptjs";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { StatusCodes } from "http-status-codes";
 
 import { generateToken, verifyToken } from "../../utils/jwt";
 import { envVars } from "../../config/env";
-import { createdNewAccessTokenWithRefreshToken, createdUserToken } from "../../utils/userToken";
+import {
+  createdNewAccessTokenWithRefreshToken,
+  createdUserToken,
+} from "../../utils/userToken";
 const credentiallogin = async (payload: Partial<IUser>) => {
   const { email, password } = payload;
   const isUserExits = await User.findOne({ email });
@@ -35,58 +39,41 @@ const credentiallogin = async (payload: Partial<IUser>) => {
 };
 
 const getNewAccessToken = async (refreshToken: string) => {
-  // const verifyedRefreshToken = verifyToken(
-  //   refreshToken,
-  //   envVars.JWT_REFRESH_SECRET
-  // ) as JwtPayload;
+  const newAccessToken = await createdNewAccessTokenWithRefreshToken(
+    refreshToken
+  );
 
-  // const isUserExits = await User.findOne({ email: verifyedRefreshToken.email });
-
-  // if (!isUserExits) {
-  //   throw new AppError(httpStatus.BAD_REQUEST, "User Dose Note Exist");
-  // }
-  // if (
-  //   isUserExits.isActive === IsActive.BLOCKED ||
-  //   isUserExits.isActive === IsActive.INACTIVE
-  // ) {
-  //   throw new AppError(
-  //     httpStatus.BAD_REQUEST,
-  //     `User Is Block${isUserExits.isActive}`
-  //   );
-  // }
-  // if (!isUserExits.isActive) {
-  //   throw new AppError(httpStatus.BAD_REQUEST, "User Is Deleted");
-  // }
-
-  // const jwtPayload = {
-  //   userId: isUserExits._id,
-  //   email: isUserExits.email,
-  //   role: isUserExits.role,
-  // };
-
-  // const accessToken = generateToken(
-  //   jwtPayload,
-  //   envVars.JWT_ACCESS_SECRET,
-  //   envVars.JWT_EXPIRES_IN
-  // );
+  return {
+    accessToken: newAccessToken,
+  };
+};
 
 
 
 
+const resetPassword = async (oldPassword : string, newPassword : string, decodedToken : JwtPayload) => {
+const user = await User.findById(decodedToken.userId)
+const isOldPasswordMatch =  await bcryptjs.compare(oldPassword, user!.password as string )
+if(!isOldPasswordMatch){
+  throw new AppError(httpStatus.UNAUTHORIZED,"Old Password Dose Not Match")
 
-  // return {
-  //   accessToken,
-  // };
-const newAccessToken = await createdNewAccessTokenWithRefreshToken(refreshToken)
-
-return {
-  accessToken : newAccessToken
 }
-
+user!.password = await bcryptjs.hash(newPassword, Number(envVars.BYCRYPT_SALT_ROUNT))
+await user!.save()
+ 
 
 };
+
+
+
+
+
+
+
+
 
 export const authServices = {
   credentiallogin,
   getNewAccessToken,
+  resetPassword
 };
